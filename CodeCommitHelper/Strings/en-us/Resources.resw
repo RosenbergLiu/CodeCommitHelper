@@ -70,13 +70,24 @@
   <data name="Shell_SquashMerge.Content" xml:space="preserve">
     <value>Squash merge</value>
   </data>
-  <data name="Settings_Personalization.Text" xml:space="preserve">
-    <value>Personalization</value>
-  </data>
   <data name="Settings_Theme.Text" xml:space="preserve">
     <value>Theme</value>
   </data>
-  <data name="Settings_Theme_Light.Content" xml:space="preserve">
+  <data name="Settings_AwsConfigure.Text" xml:space="preserve">
+    <value>AWS Configure</value>
+  </data>
+	<data name="Settings_AwsAccessKeyId.Text" xml:space="preserve">
+    <value>AWS Access key ID</value>
+  </data>
+	<data name="Settings_AwsSecretAccessKey.Text" xml:space="preserve">
+    <value>AWS Secret access key</value>
+  </data>
+	<data name="Settings_DefaultRegionName.Text" xml:space="preserve">
+    <value>Default region name</value>
+  </data>
+
+
+	<data name="Settings_Theme_Light.Content" xml:space="preserve">
     <value>Light</value>
   </data>
   <data name="Settings_Theme_Dark.Content" xml:space="preserve">

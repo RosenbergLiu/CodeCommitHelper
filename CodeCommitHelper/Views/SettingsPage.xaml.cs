@@ -1,6 +1,7 @@
 ﻿using CodeCommitHelper.ViewModels;
-
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Amazon.Runtime.CredentialManagement;
 
 namespace CodeCommitHelper.Views;
 
@@ -16,5 +17,20 @@ public sealed partial class SettingsPage : Page
     {
         ViewModel = App.GetService<SettingsViewModel>();
         InitializeComponent();
+    }
+
+    private void SaveCredentialButton_Click(object sender, RoutedEventArgs e)
+    {
+        var options = new CredentialProfileOptions
+        {
+            AccessKey = AwsAccessKeyId.Text,
+            SecretKey = AwsSecretAccessKey.Text
+        };
+
+        var profile = new CredentialProfile("default", options);
+
+        var sharedFile = new SharedCredentialsFile();
+
+        sharedFile.RegisterProfile(profile);
     }
 }

@@ -3,6 +3,7 @@ using Amazon.CodeCommit.Model;
 using CodeCommitHelper.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace CodeCommitHelper.Views;
 
@@ -24,6 +25,11 @@ public sealed partial class CreatePullRequestPage : Page
         try
         {
             CreateButton.IsEnabled = false;
+            RepositoryInput.IsEnabled = false;
+            BranchNameInput.IsEnabled = false;
+            TitleInput.IsEnabled = false;
+            CreateButton.Content = "Creating pull request";
+            OnCreating.Visibility = Visibility.Visible;
 
             var repositoryName = RepositoryInput.Text.Trim();
             var branchName = BranchNameInput.Text.Trim();
@@ -46,7 +52,6 @@ public sealed partial class CreatePullRequestPage : Page
                 ClientRequestToken = Guid.NewGuid().ToString()
             };
 
-
             var response = await client.CreatePullRequestAsync(request);
 
             OutputText.Text =
@@ -54,11 +59,16 @@ public sealed partial class CreatePullRequestPage : Page
         }
         catch (Exception ex)
         {
-            OutputText.Text = ex.Message;
+            OutputText.Text = ex.GetType().ToString() + ":\n" + ex.Message;
         }
         finally
         {
             CreateButton.IsEnabled = true;
+            RepositoryInput.IsEnabled = true;
+            BranchNameInput.IsEnabled = true;
+            TitleInput.IsEnabled = true;
+            CreateButton.Content = "Create pull request";
+            OnCreating.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -71,6 +81,8 @@ public sealed partial class CreatePullRequestPage : Page
 
     private void CopyButton_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var package = new DataPackage();
+        package.SetText(OutputText.Text);
+        Clipboard.SetContent(package);
     }
 }
