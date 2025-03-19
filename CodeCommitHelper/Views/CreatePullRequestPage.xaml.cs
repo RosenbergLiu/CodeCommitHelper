@@ -68,4 +68,9 @@ public sealed partial class CreatePullRequestPage : Page
         RepositoryInput.Text = string.Empty;
         TitleInput.Text = string.Empty;
     }
+
+    private void CopyButton_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }
