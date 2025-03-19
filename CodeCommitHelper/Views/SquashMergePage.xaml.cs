@@ -4,16 +4,16 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace CodeCommitHelper.Views;
 
-public sealed partial class MainPage : Page
+public sealed partial class SquashMergePage : Page
 {
-    public MainViewModel ViewModel
+    public SquashMergeViewModel ViewModel
     {
         get;
     }
 
-    public MainPage()
+    public SquashMergePage()
     {
-        ViewModel = App.GetService<MainViewModel>();
+        ViewModel = App.GetService<SquashMergeViewModel>();
         InitializeComponent();
     }
 }

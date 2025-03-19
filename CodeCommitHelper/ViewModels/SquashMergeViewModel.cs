@@ -2,9 +2,9 @@
 
 namespace CodeCommitHelper.ViewModels;
 
-public partial class MainViewModel : ObservableRecipient
+public partial class SquashMergeViewModel : ObservableRecipient
 {
-    public MainViewModel()
+    public SquashMergeViewModel()
     {
     }
 }

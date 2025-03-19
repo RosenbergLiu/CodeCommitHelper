@@ -11,11 +11,11 @@
   IgnorableNamespaces="uap rescap genTemplate">
 
   <Identity
-    Name="f089479a-e9e9-4790-a4f3-99a9c8a15c27"
+    Name="f19ab575-233f-4141-8cd4-88ccf4effe02"
     Publisher="CN=rosen"
     Version="1.0.0.0" />
     
-  <mp:PhoneIdentity PhoneProductId="f089479a-e9e9-4790-a4f3-99a9c8a15c27" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="f19ab575-233f-4141-8cd4-88ccf4effe02" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     
   <Properties>
     <DisplayName>CodeCommitHelper</DisplayName>
@@ -47,13 +47,13 @@
       </uap:VisualElements>
       <Extensions>
           <desktop:Extension Category="windows.toastNotificationActivation">
-              <desktop:ToastNotificationActivation ToastActivatorCLSID="97925016-e260-4ef6-9dd0-cde1fa97aba5" />
+              <desktop:ToastNotificationActivation ToastActivatorCLSID="8da0618b-b9dc-46e0-b185-1cc6abe37f53" />
           </desktop:Extension>
 
           <com:Extension Category="windows.comServer">
               <com:ComServer>
                   <com:ExeServer Executable="CodeCommitHelper.exe" Arguments="----AppNotificationActivated:" DisplayName="Toast activator">
-                      <com:Class Id="97925016-e260-4ef6-9dd0-cde1fa97aba5" DisplayName="Toast activator"/>
+                      <com:Class Id="8da0618b-b9dc-46e0-b185-1cc6abe37f53" DisplayName="Toast activator"/>
                   </com:ExeServer>
               </com:ComServer>
           </com:Extension>

@@ -14,7 +14,8 @@ public class PageService : IPageService
 
     public PageService()
     {
-        Configure<MainViewModel, MainPage>();
+        Configure<CreatePullRequestViewModel, CreatePullRequestPage>();
+        Configure<SquashMergeViewModel, SquashMergePage>();
         Configure<SettingsViewModel, SettingsPage>();
     }
 

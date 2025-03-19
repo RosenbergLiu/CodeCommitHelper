@@ -64,8 +64,11 @@
 	<data name="AppDescription" xml:space="preserve">
 		<value>CodeCommitHelper</value>
   	</data>
-  <data name="Shell_Main.Content" xml:space="preserve">
-    <value>Main</value>
+  <data name="Shell_CreatePullRequest.Content" xml:space="preserve">
+    <value>CreatePullRequest</value>
+  </data>
+  <data name="Shell_SquashMerge.Content" xml:space="preserve">
+    <value>SquashMerge</value>
   </data>
   <data name="Settings_Personalization.Text" xml:space="preserve">
     <value>Personalization</value>
