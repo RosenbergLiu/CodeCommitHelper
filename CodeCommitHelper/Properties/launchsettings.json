@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "CodeCommitHelper (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "CodeCommitHelper (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}
