@@ -65,10 +65,10 @@
 		<value>CodeCommitHelper</value>
   	</data>
   <data name="Shell_CreatePullRequest.Content" xml:space="preserve">
-    <value>CreatePullRequest</value>
+    <value>Create pull request</value>
   </data>
   <data name="Shell_SquashMerge.Content" xml:space="preserve">
-    <value>SquashMerge</value>
+    <value>Squash merge</value>
   </data>
   <data name="Settings_Personalization.Text" xml:space="preserve">
     <value>Personalization</value>

@@ -7,6 +7,21 @@
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
-        
+        <StackPanel Spacing="16">
+            <TextBox x:Name="RepositoryInput" PlaceholderText="Repository Name"></TextBox>
+            <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name"></TextBox>
+            <TextBox x:Name="TitleInput" PlaceholderText="Title"></TextBox>
+            <Button x:Name="CreateButton" Content="Create Pull Request" Click="CreateButton_Click" ClickMode="Release" Style="{StaticResource AccentButtonStyle}"></Button>
+
+            <TextBox x:Name="OutputText" PlaceholderText="Output" TextWrapping="Wrap" AcceptsReturn="True" Height="128"></TextBox>
+
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <Button x:Name="CopyButton" Click="CopyButton_Click">
+                    <FontIcon Glyph="&#xE8C8;" />
+                </Button>
+                <Button x:Name="ClearButton" Content="Clear" Click="ClearButton_Click"></Button>
+            </StackPanel>
+
+        </StackPanel>
     </Grid>
 </Page>
