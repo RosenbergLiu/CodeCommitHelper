@@ -18,11 +18,11 @@
                 <TextBlock x:Uid="Settings_AwsConfigure" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <StackPanel Margin="0,16,0,0" Spacing="12">
                     <TextBlock x:Uid="Settings_AwsAccessKeyId" />
-                    <TextBox x:Name="AwsAccessKeyId"></TextBox>
+                    <PasswordBox x:Name="AwsAccessKeyId" PasswordChar="●"></PasswordBox>
                 </StackPanel>
                 <StackPanel Margin="0,16,0,0" Spacing="12">
                     <TextBlock x:Uid="Settings_AwsSecretAccessKey" />
-                    <TextBox x:Name="AwsSecretAccessKey"></TextBox>
+                    <PasswordBox x:Name="AwsSecretAccessKey" PasswordChar="●"></PasswordBox>
                 </StackPanel>
                 <Button Margin="0,24,0,0" x:Name="SaveCredentialButton" Click="SaveCredentialButton_Click" Content="Save" Style="{ThemeResource AccentButtonStyle}"></Button>
             </StackPanel>

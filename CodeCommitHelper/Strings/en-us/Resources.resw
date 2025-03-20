@@ -82,8 +82,8 @@
 	<data name="Settings_AwsSecretAccessKey.Text" xml:space="preserve">
     <value>AWS Secret access key</value>
   </data>
-	<data name="Settings_DefaultRegionName.Text" xml:space="preserve">
-    <value>Default region name</value>
+	<data name="Settings_RegionName.Text" xml:space="preserve">
+    <value>Region name</value>
   </data>
 
 

@@ -1,4 +1,5 @@
-﻿using CodeCommitHelper.ViewModels;
+﻿using Amazon;
+using CodeCommitHelper.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Amazon.Runtime.CredentialManagement;
@@ -17,17 +18,29 @@ public sealed partial class SettingsPage : Page
     {
         ViewModel = App.GetService<SettingsViewModel>();
         InitializeComponent();
+
+        var sharedFile = new SharedCredentialsFile();
+        CredentialProfile profile;
+
+        if (sharedFile.TryGetProfile("default", out profile))
+        {
+            AwsAccessKeyId.Password = profile.Options.AccessKey;
+            AwsSecretAccessKey.Password = profile.Options.SecretKey;
+        }
     }
 
     private void SaveCredentialButton_Click(object sender, RoutedEventArgs e)
     {
         var options = new CredentialProfileOptions
         {
-            AccessKey = AwsAccessKeyId.Text,
-            SecretKey = AwsSecretAccessKey.Text
+            AccessKey = AwsAccessKeyId.Password,
+            SecretKey = AwsSecretAccessKey.Password
         };
 
-        var profile = new CredentialProfile("default", options);
+        var profile = new CredentialProfile("default", options)
+        {
+            Region = RegionEndpoint.APSoutheast2
+        };
 
         var sharedFile = new SharedCredentialsFile();
 
