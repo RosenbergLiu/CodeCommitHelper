@@ -55,7 +55,7 @@ public sealed partial class CreatePullRequestPage : Page
             var response = await client.CreatePullRequestAsync(request);
 
             OutputText.Text =
-                $"https://ap-southeast-2.console.aws.amazon.com/codesuite/codecommit/repositories/myprosperity-v2/pull-requests/{response.PullRequest.PullRequestId}/details?region=ap-southeast-2";
+                $"https://ap-southeast-2.console.aws.amazon.com/codesuite/codecommit/repositories/{repositoryName}/pull-requests/{response.PullRequest.PullRequestId}/details?region=ap-southeast-2";
         }
         catch (Exception ex)
         {

@@ -20,9 +20,8 @@ public sealed partial class SettingsPage : Page
         InitializeComponent();
 
         var sharedFile = new SharedCredentialsFile();
-        CredentialProfile profile;
 
-        if (sharedFile.TryGetProfile("default", out profile))
+        if (sharedFile.TryGetProfile("default", out CredentialProfile profile))
         {
             AwsAccessKeyId.Password = profile.Options.AccessKey;
             AwsSecretAccessKey.Password = profile.Options.SecretKey;
