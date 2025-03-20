@@ -78,6 +78,8 @@ public partial class App : Application
             services.AddTransient<SquashMergePage>();
             services.AddTransient<CreatePullRequestViewModel>();
             services.AddTransient<CreatePullRequestPage>();
+            services.AddTransient<PullRequestListPage>();
+            services.AddTransient<PullRequestListViewModel>();
             services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();
 
