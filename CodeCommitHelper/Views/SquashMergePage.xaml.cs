@@ -126,7 +126,7 @@ public sealed partial class SquashMergePage : Page
             PullRequestSelector.PlaceholderText = "Select a pull request";
             await LoadPullRequestsAsync();
         }
-        catch (Exception e)
+        catch
         {
         }
     }
@@ -142,7 +142,7 @@ public sealed partial class SquashMergePage : Page
 
             await _client.MergePullRequestBySquashAsync(mergeRequest);
         }
-        catch (Exception e)
+        catch
         {
         }
         finally
@@ -150,6 +150,7 @@ public sealed partial class SquashMergePage : Page
             MergeButton.IsEnabled = false;
             CloseButton.IsEnabled = false;
         }
+    }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {

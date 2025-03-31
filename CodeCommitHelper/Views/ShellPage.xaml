@@ -53,11 +53,7 @@
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEC32;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_PullRequestList" helpers:NavigationHelper.NavigateTo="CodeCommitHelper.ViewModels.PullRequestListViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEC32;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                
             </NavigationView.MenuItems>
             <NavigationView.HeaderTemplate>
                 <DataTemplate>
