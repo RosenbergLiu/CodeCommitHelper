@@ -6,7 +6,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+
     <Grid x:Name="ContentArea">
-        
+        <StackPanel Spacing="16">
+            <ComboBox x:Name="RepositorySelector" SelectionChanged="Repository_SelectionChanged" Header="Repository" Width="400">
+            </ComboBox>
+            <ComboBox x:Name="PullRequestSelector" SelectionChanged="PullRequest_SelectionChanged" Header="PullRequest" Width="400">
+            </ComboBox>
+            <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 16,0,0">
+                <Button x:Name="MergeButton" Click="MergeButton_Click" Content="Merge pull request" Style="{ThemeResource AccentButtonStyle}">
+                </Button>
+                <Button x:Name="CloseButton" Content="Close pull request" Click="CloseButton_Click"></Button>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Page>

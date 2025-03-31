@@ -8,9 +8,9 @@
 
     <Grid x:Name="ContentArea">
         <StackPanel Spacing="16">
-            <TextBox x:Name="RepositoryInput" PlaceholderText="Repository Name"></TextBox>
-            <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name"></TextBox>
-            <TextBox x:Name="TitleInput" PlaceholderText="Title"></TextBox>
+            <TextBox x:Name="RepositoryInput" PlaceholderText="Repository Name" Width="300"></TextBox>
+            <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name" Width="300"></TextBox>
+            <TextBox x:Name="TitleInput" PlaceholderText="Title" Width="300"></TextBox>
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <Button x:Name="CreateButton" Content="Create Pull Request" Click="CreateButton_Click" ClickMode="Release" Style="{ThemeResource AccentButtonStyle}"></Button>
                 <ProgressBar x:Name="OnCreating" Width="140" IsIndeterminate="True" ShowPaused="False" ShowError="False" Visibility="Collapsed"/>
