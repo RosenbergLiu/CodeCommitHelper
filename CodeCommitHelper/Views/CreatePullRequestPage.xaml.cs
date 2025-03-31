@@ -1,5 +1,6 @@
 ﻿using Amazon.CodeCommit;
 using Amazon.CodeCommit.Model;
+using CodeCommitHelper.Core.Contracts.Services;
 using CodeCommitHelper.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +10,8 @@ namespace CodeCommitHelper.Views;
 
 public sealed partial class CreatePullRequestPage : Page
 {
+    private readonly IFileService _fileService;
+
     public CreatePullRequestViewModel ViewModel
     {
         get;
@@ -16,8 +19,11 @@ public sealed partial class CreatePullRequestPage : Page
 
     public CreatePullRequestPage()
     {
+        _fileService = App.GetService<IFileService>();
         ViewModel = App.GetService<CreatePullRequestViewModel>();
         InitializeComponent();
+
+        RepositoryInput.Text = _fileService.ReadAsString("settings", "last-repository.txt");
     }
 
     private async void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -35,6 +41,8 @@ public sealed partial class CreatePullRequestPage : Page
             var branchName = BranchNameInput.Text.Trim();
             var title = TitleInput.Text.Trim();
 
+            _fileService.SaveAsString("settings", "last-repository.txt", repositoryName);
+
             var client = new AmazonCodeCommitClient();
 
             var request = new CreatePullRequestRequest()
@@ -45,8 +53,7 @@ public sealed partial class CreatePullRequestPage : Page
                     new Target()
                     {
                         RepositoryName = repositoryName,
-                        SourceReference = branchName,
-                        DestinationReference = "dev"
+                        SourceReference = branchName
                     }
                 ],
                 ClientRequestToken = Guid.NewGuid().ToString()
@@ -75,8 +82,8 @@ public sealed partial class CreatePullRequestPage : Page
     private void ClearButton_Click(object sender, RoutedEventArgs e)
     {
         BranchNameInput.Text = string.Empty;
-        RepositoryInput.Text = string.Empty;
         TitleInput.Text = string.Empty;
+        OutputText.Text = string.Empty;
     }
 
     private void CopyButton_Click(object sender, RoutedEventArgs e)

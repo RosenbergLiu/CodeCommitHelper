@@ -38,4 +38,26 @@ public class FileService : IFileService
             File.Delete(Path.Combine(folderPath, fileName));
         }
     }
+
+    public string ReadAsString(string folderPath, string fileName)
+    {
+        var path = Path.Combine(folderPath, fileName);
+        if (File.Exists(path))
+        {
+            var text = File.ReadAllText(path);
+            return text;
+        }
+
+        return string.Empty;
+    }
+
+    public void SaveAsString(string folderPath, string fileName, string content)
+    {
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+
+        File.WriteAllText(Path.Combine(folderPath, fileName), content, Encoding.UTF8);
+    }
 }
