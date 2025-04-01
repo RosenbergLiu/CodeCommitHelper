@@ -16,6 +16,7 @@ public sealed partial class SquashMergePage : Page
     private readonly AmazonCodeCommitClient _client;
     private PullRequest? _selectedPullRequest;
     private readonly ILocalSettingsService _localSettingsService;
+    private readonly IAppNotificationService _appNotificationService;
 
     public SquashMergeViewModel ViewModel
     {
@@ -27,6 +28,7 @@ public sealed partial class SquashMergePage : Page
         _localSettingsService = App.GetService<ILocalSettingsService>();
         _client = new AmazonCodeCommitClient();
         ViewModel = App.GetService<SquashMergeViewModel>();
+        _appNotificationService = App.GetService<IAppNotificationService>();
         InitializeComponent();
 
         RepositorySelector.PlaceholderText = "Loading pull requests...";
@@ -157,6 +159,7 @@ public sealed partial class SquashMergePage : Page
         try
         {
             MergeButton.IsEnabled = false;
+            MergeButton.Content = "Merging...";
             CloseButton.IsEnabled = false;
             OnMergingOrClosing.Visibility = Visibility.Visible;
 
@@ -179,12 +182,15 @@ public sealed partial class SquashMergePage : Page
 
             await _client.MergePullRequestBySquashAsync(mergeRequest);
         }
-        catch
+        catch (Exception ex)
         {
+            _appNotificationService.Show(ex.Message);
         }
         finally
         {
-            PullRequestSelector.SelectedIndex = -1;
+            MergeButton.IsEnabled = true;
+            MergeButton.Content = "Merge";
+            CloseButton.IsEnabled = true;
             OnMergingOrClosing.Visibility = Visibility.Collapsed;
         }
     }
@@ -195,6 +201,7 @@ public sealed partial class SquashMergePage : Page
         {
             MergeButton.IsEnabled = false;
             CloseButton.IsEnabled = false;
+            CloseButton.Content = "Closing...";
             OnMergingOrClosing.Visibility = Visibility.Visible;
 
             var closeRequest = new UpdatePullRequestStatusRequest()
@@ -205,12 +212,15 @@ public sealed partial class SquashMergePage : Page
 
             await _client.UpdatePullRequestStatusAsync(closeRequest);
         }
-        catch
+        catch (Exception ex)
         {
+            _appNotificationService.Show(ex.Message);
         }
         finally
         {
-            PullRequestSelector.SelectedIndex = -1;
+            MergeButton.IsEnabled = true;
+            CloseButton.IsEnabled = true;
+            CloseButton.Content = "Close";
             OnMergingOrClosing.Visibility = Visibility.Collapsed;
         }
     }
