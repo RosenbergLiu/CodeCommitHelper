@@ -8,15 +8,18 @@
 
     <Grid x:Name="ContentArea">
         <StackPanel Spacing="16" HorizontalAlignment="Left">
-            <TextBox x:Name="RepositoryInput" PlaceholderText="Repository Name" Width="400"></TextBox>
-            <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name" Width="400"></TextBox>
-            <TextBox x:Name="TitleInput" PlaceholderText="Title" Width="400"></TextBox>
-            <StackPanel Orientation="Horizontal" Spacing="24">
+            <ComboBox x:Name="RepositorySelector" SelectionChanged="Repository_SelectionChanged" Header="Repository" Width="400">
+            </ComboBox>
+            <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name" Width="400" Header="Branch name" TextChanged="BranchNameInput_OnTextChanged"></TextBox>
+            <TextBox x:Name="TitleInput" PlaceholderText="Title" Width="400" Header="Title" TextChanged="TitleInput_OnTextChanged"></TextBox>
+            <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 8,0,0">
                 <Button x:Name="CreateButton" Content="Create Pull Request" Click="CreateButton_Click" ClickMode="Release" Style="{ThemeResource AccentButtonStyle}"></Button>
                 <ProgressBar x:Name="OnCreating" Width="140" IsIndeterminate="True" ShowPaused="False" ShowError="False" Visibility="Collapsed"/>
             </StackPanel>
 
-            <TextBox x:Name="OutputText" PlaceholderText="Output" TextWrapping="Wrap" AcceptsReturn="True" Height="128"></TextBox>
+            <StackPanel>
+                <TextBox x:Name="OutputText" PlaceholderText="Output" TextWrapping="Wrap" AcceptsReturn="True" Height="128" Width="400"></TextBox>
+            </StackPanel>
 
             <StackPanel Orientation="Horizontal" Spacing="12">
                 <Button x:Name="CopyButton" Click="CopyButton_Click">

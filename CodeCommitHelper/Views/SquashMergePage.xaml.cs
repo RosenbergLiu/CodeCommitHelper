@@ -13,10 +13,9 @@ namespace CodeCommitHelper.Views;
 public sealed partial class SquashMergePage : Page
 {
     private string? _selectedRepository;
-    private readonly AmazonCodeCommitClient _client;
+    private readonly AmazonCodeCommitClient _codeCommitClient;
     private PullRequest? _selectedPullRequest;
     private readonly ILocalSettingsService _localSettingsService;
-    private readonly IAppNotificationService _appNotificationService;
 
     public SquashMergeViewModel ViewModel
     {
@@ -26,9 +25,8 @@ public sealed partial class SquashMergePage : Page
     public SquashMergePage()
     {
         _localSettingsService = App.GetService<ILocalSettingsService>();
-        _client = new AmazonCodeCommitClient();
+        _codeCommitClient = new AmazonCodeCommitClient();
         ViewModel = App.GetService<SquashMergeViewModel>();
-        _appNotificationService = App.GetService<IAppNotificationService>();
         InitializeComponent();
 
         RepositorySelector.PlaceholderText = "Loading pull requests...";
@@ -58,33 +56,24 @@ public sealed partial class SquashMergePage : Page
 
     private async Task LoadRepositoriesAsync()
     {
-        try
+        var listRequest = new ListRepositoriesRequest()
         {
-            string? nextToken = null;
+            NextToken = null,
+            SortBy = SortByEnum.RepositoryName,
+            Order = OrderEnum.Ascending
+        };
 
-            var listRequest = new ListRepositoriesRequest()
-            {
-                NextToken = nextToken,
-                SortBy = SortByEnum.RepositoryName,
-                Order = OrderEnum.Ascending
-            };
+        var repositories = await _codeCommitClient.ListRepositoriesAsync(listRequest);
 
-            var repositories = await _client.ListRepositoriesAsync(listRequest);
+        RepositorySelector.ItemsSource = repositories.Repositories.Select(r => r.RepositoryName).ToList();
+        RepositorySelector.IsEnabled = true;
+        RepositorySelector.PlaceholderText = "Select a repository";
 
-            RepositorySelector.ItemsSource = repositories.Repositories.Select(r => r.RepositoryName).ToList();
-            RepositorySelector.IsEnabled = true;
-            RepositorySelector.PlaceholderText = "Select a repository";
+        var lastSelectedRepository = await _localSettingsService.ReadSettingAsync<string>("LastSelectedRepository");
 
-            var lastSelectedRepository = await _localSettingsService.ReadSettingAsync<string>("LastSelectedRepository");
-
-            if (lastSelectedRepository != null)
-            {
-                RepositorySelector.SelectedItem = lastSelectedRepository;
-            }
-        }
-        catch
+        if (lastSelectedRepository != null)
         {
-
+            RepositorySelector.SelectedItem = lastSelectedRepository;
         }
     }
 
@@ -92,12 +81,8 @@ public sealed partial class SquashMergePage : Page
     {
         try
         {
-            var sharedFile = new SharedCredentialsFile();
+            PullRequestSelector.PlaceholderText = "Loading pull requests...";
 
-            if (!sharedFile.TryGetProfile("default", out var profile))
-            {
-
-            }
             var stsClient = new AmazonSecurityTokenServiceClient();
             var identityResponse = await stsClient.GetCallerIdentityAsync(new GetCallerIdentityRequest());
 
@@ -108,7 +93,7 @@ public sealed partial class SquashMergePage : Page
                 AuthorArn = identityResponse.Arn
             };
 
-            var pullRequests = await _client.ListPullRequestsAsync(listRequest);
+            var pullRequests = await _codeCommitClient.ListPullRequestsAsync(listRequest);
 
             var getPullRequestDetailTasks = new List<Task<GetPullRequestResponse>>();
 
@@ -119,7 +104,7 @@ public sealed partial class SquashMergePage : Page
                     PullRequestId = pullRequestId
                 };
 
-                getPullRequestDetailTasks.Add(_client.GetPullRequestAsync(getRequest));
+                getPullRequestDetailTasks.Add(_codeCommitClient.GetPullRequestAsync(getRequest));
             }
 
             var getResponses = await Task.WhenAll(getPullRequestDetailTasks);
@@ -129,18 +114,18 @@ public sealed partial class SquashMergePage : Page
             PullRequestSelector.PlaceholderText = "Select a pull request";
             PullRequestSelector.IsEnabled = true;
         }
-        catch
+        catch (Exception ex)
         {
-
+            await App.MainWindow.ShowMessageDialogAsync(ex.Message, ex.GetType().ToString());
         }
     }
 
     private async void Repository_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        CheckIfOkToMergeOrClose();
-
         try
         {
+            CheckIfOkToMergeOrClose();
+
             _selectedRepository = RepositorySelector.SelectedItem as string;
 
             PullRequestSelector.PlaceholderText = "Select a pull request";
@@ -149,8 +134,9 @@ public sealed partial class SquashMergePage : Page
 
             await _localSettingsService.SaveSettingAsync("LastSelectedRepository", _selectedRepository);
         }
-        catch
+        catch (Exception ex)
         {
+            await App.MainWindow.ShowMessageDialogAsync(ex.Message, ex.GetType().ToString());
         }
     }
 
@@ -159,7 +145,7 @@ public sealed partial class SquashMergePage : Page
         try
         {
             MergeButton.IsEnabled = false;
-            MergeButton.Content = "Merging...";
+            MergeButton.Content = "Merging";
             CloseButton.IsEnabled = false;
             OnMergingOrClosing.Visibility = Visibility.Visible;
 
@@ -180,11 +166,13 @@ public sealed partial class SquashMergePage : Page
                 CommitMessage = message
             };
 
-            await _client.MergePullRequestBySquashAsync(mergeRequest);
+            await _codeCommitClient.MergePullRequestBySquashAsync(mergeRequest);
+
+            await LoadPullRequestsAsync();
         }
         catch (Exception ex)
         {
-            _appNotificationService.Show(ex.Message);
+            await App.MainWindow.ShowMessageDialogAsync(ex.Message, ex.GetType().ToString());
         }
         finally
         {
@@ -201,7 +189,7 @@ public sealed partial class SquashMergePage : Page
         {
             MergeButton.IsEnabled = false;
             CloseButton.IsEnabled = false;
-            CloseButton.Content = "Closing...";
+            CloseButton.Content = "Closing";
             OnMergingOrClosing.Visibility = Visibility.Visible;
 
             var closeRequest = new UpdatePullRequestStatusRequest()
@@ -210,11 +198,13 @@ public sealed partial class SquashMergePage : Page
                 PullRequestStatus = PullRequestStatusEnum.CLOSED
             };
 
-            await _client.UpdatePullRequestStatusAsync(closeRequest);
+            await _codeCommitClient.UpdatePullRequestStatusAsync(closeRequest);
+
+            await LoadPullRequestsAsync();
         }
         catch (Exception ex)
         {
-            _appNotificationService.Show(ex.Message);
+            await App.MainWindow.ShowMessageDialogAsync(ex.Message, ex.GetType().ToString());
         }
         finally
         {
