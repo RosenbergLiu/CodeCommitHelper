@@ -25,7 +25,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 24,0,24">
+            <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 48,0,24">
                 <Button x:Name="MergeButton" Click="MergeButton_Click" Content="Merge pull request" Style="{ThemeResource AccentButtonStyle}">
                 </Button>
                 <Button x:Name="CloseButton" Content="Close pull request" Click="CloseButton_Click"></Button>

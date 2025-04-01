@@ -35,6 +35,7 @@ public sealed partial class SquashMergePage : Page
         MergeButton.IsEnabled = false;
         CloseButton.IsEnabled = false;
         _ = LoadRepositoriesAsync();
+        _ = LoadAuthorAndEmail();
     }
 
     private void PullRequest_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,6 +43,15 @@ public sealed partial class SquashMergePage : Page
         _selectedPullRequest = PullRequestSelector.SelectedItem as PullRequest;
 
         CheckIfOkToMergeOrClose();
+    }
+
+    private async Task LoadAuthorAndEmail()
+    {
+        var author = await _localSettingsService.ReadSettingAsync<string>("Author");
+        var email = await _localSettingsService.ReadSettingAsync<string>("Email");
+
+        AuthorInput.Text = author ?? string.Empty;
+        EmailInput.Text = email ?? string.Empty;
     }
 
     private async Task LoadRepositoriesAsync()
@@ -150,13 +160,21 @@ public sealed partial class SquashMergePage : Page
             CloseButton.IsEnabled = false;
             OnMergingOrClosing.Visibility = Visibility.Visible;
 
+            var author = AuthorInput.Text.Trim();
+            var email = EmailInput.Text.Trim();
+            var message = MessageInput.Text.Trim();
+
+            await _localSettingsService.SaveSettingAsync("Author", author);
+
+            await _localSettingsService.SaveSettingAsync("Email", email);
+
             var mergeRequest = new MergePullRequestBySquashRequest()
             {
                 PullRequestId = _selectedPullRequest!.PullRequestId,
-                AuthorName = "Rosenberg Xiangyu Liu",
-                Email = "xiangyu.liu@myprosperity.com.au",
+                AuthorName = author,
+                Email = email,
                 RepositoryName = _selectedRepository,
-                CommitMessage = _selectedRepository
+                CommitMessage = message
             };
 
             await _client.MergePullRequestBySquashAsync(mergeRequest);
