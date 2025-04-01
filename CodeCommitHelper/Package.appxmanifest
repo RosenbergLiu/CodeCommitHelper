@@ -12,14 +12,14 @@
 
   <Identity
     Name="f19ab575-233f-4141-8cd4-88ccf4effe02"
-    Publisher="CN=rosen"
+    Publisher="CN=Rosenberg Xiangyu Liu"
     Version="1.0.0.0" />
     
   <mp:PhoneIdentity PhoneProductId="f19ab575-233f-4141-8cd4-88ccf4effe02" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     
   <Properties>
     <DisplayName>CodeCommitHelper</DisplayName>
-    <PublisherDisplayName>rosen</PublisherDisplayName>
+    <PublisherDisplayName>Rosenberg Xiangyu Liu</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -63,6 +63,7 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient"/>
   </Capabilities>
 
   <genTemplate:Metadata>

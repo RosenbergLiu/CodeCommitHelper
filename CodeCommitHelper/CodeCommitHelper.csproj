@@ -14,6 +14,8 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <PackageCertificateThumbprint>9D4778F172329F4321F49B5F08D8A8B39C732DCE</PackageCertificateThumbprint>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\PullRequestListPage.xaml" />
