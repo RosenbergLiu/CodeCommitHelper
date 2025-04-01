@@ -3,11 +3,10 @@ using Amazon.CodeCommit.Model;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
+using CodeCommitHelper.Contracts.Services;
 using CodeCommitHelper.ViewModels;
-
-using Microsoft.UI.Xaml.Controls;
-using Windows.Media.Protection.PlayReady;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace CodeCommitHelper.Views;
 
@@ -16,6 +15,7 @@ public sealed partial class SquashMergePage : Page
     private string? _selectedRepository;
     private readonly AmazonCodeCommitClient _client;
     private PullRequest? _selectedPullRequest;
+    private readonly ILocalSettingsService _localSettingsService;
 
     public SquashMergeViewModel ViewModel
     {
@@ -24,6 +24,7 @@ public sealed partial class SquashMergePage : Page
 
     public SquashMergePage()
     {
+        _localSettingsService = App.GetService<ILocalSettingsService>();
         _client = new AmazonCodeCommitClient();
         ViewModel = App.GetService<SquashMergeViewModel>();
         InitializeComponent();
@@ -40,8 +41,7 @@ public sealed partial class SquashMergePage : Page
     {
         _selectedPullRequest = PullRequestSelector.SelectedItem as PullRequest;
 
-        MergeButton.IsEnabled = true;
-        CloseButton.IsEnabled = true;
+        CheckIfOkToMergeOrClose();
     }
 
     private async Task LoadRepositoriesAsync()
@@ -62,10 +62,17 @@ public sealed partial class SquashMergePage : Page
             RepositorySelector.ItemsSource = repositories.Repositories.Select(r => r.RepositoryName).ToList();
             RepositorySelector.IsEnabled = true;
             RepositorySelector.PlaceholderText = "Select a repository";
+
+            var lastSelectedRepository = await _localSettingsService.ReadSettingAsync<string>("LastSelectedRepository");
+
+            if (lastSelectedRepository != null)
+            {
+                RepositorySelector.SelectedItem = lastSelectedRepository;
+            }
         }
         catch
         {
-            
+
         }
     }
 
@@ -118,13 +125,17 @@ public sealed partial class SquashMergePage : Page
 
     private async void Repository_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        CheckIfOkToMergeOrClose();
+
         try
         {
             _selectedRepository = RepositorySelector.SelectedItem as string;
 
-            PullRequestSelector.IsEnabled = true;
             PullRequestSelector.PlaceholderText = "Select a pull request";
+
             await LoadPullRequestsAsync();
+
+            await _localSettingsService.SaveSettingAsync("LastSelectedRepository", _selectedRepository);
         }
         catch
         {
@@ -135,9 +146,17 @@ public sealed partial class SquashMergePage : Page
     {
         try
         {
+            MergeButton.IsEnabled = false;
+            CloseButton.IsEnabled = false;
+            OnMergingOrClosing.Visibility = Visibility.Visible;
+
             var mergeRequest = new MergePullRequestBySquashRequest()
             {
-                PullRequestId = _selectedPullRequest!.PullRequestId
+                PullRequestId = _selectedPullRequest!.PullRequestId,
+                AuthorName = "Rosenberg Xiangyu Liu",
+                Email = "xiangyu.liu@myprosperity.com.au",
+                RepositoryName = _selectedRepository,
+                CommitMessage = _selectedRepository
             };
 
             await _client.MergePullRequestBySquashAsync(mergeRequest);
@@ -147,13 +166,86 @@ public sealed partial class SquashMergePage : Page
         }
         finally
         {
-            MergeButton.IsEnabled = false;
-            CloseButton.IsEnabled = false;
+            PullRequestSelector.SelectedIndex = -1;
+            OnMergingOrClosing.Visibility = Visibility.Collapsed;
         }
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    private async void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        try
+        {
+            MergeButton.IsEnabled = false;
+            CloseButton.IsEnabled = false;
+            OnMergingOrClosing.Visibility = Visibility.Visible;
+
+            var closeRequest = new UpdatePullRequestStatusRequest()
+            {
+                PullRequestId = _selectedPullRequest!.PullRequestId,
+                PullRequestStatus = PullRequestStatusEnum.CLOSED
+            };
+
+            await _client.UpdatePullRequestStatusAsync(closeRequest);
+        }
+        catch
+        {
+        }
+        finally
+        {
+            PullRequestSelector.SelectedIndex = -1;
+            OnMergingOrClosing.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void AuthorInput_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        CheckIfOkToMergeOrClose();
+    }
+
+    private void EmailInput_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        CheckIfOkToMergeOrClose();
+    }
+
+    private void MessageInput_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        CheckIfOkToMergeOrClose();
+    }
+
+    private void CheckIfOkToMergeOrClose()
+    {
+        var okToMerge = true;
+        var okToClose = true;
+
+        if (string.IsNullOrWhiteSpace(AuthorInput.Text))
+        {
+            okToMerge = false;
+        }
+
+        if (string.IsNullOrWhiteSpace(EmailInput.Text))
+        {
+            okToMerge = false;
+        }
+
+        if (string.IsNullOrWhiteSpace(MessageInput.Text))
+        {
+            okToMerge = false;
+        }
+
+        if (RepositorySelector.SelectedIndex == -1)
+        {
+            okToClose = false;
+            okToMerge = false;
+        }
+
+        if (PullRequestSelector.SelectedIndex == -1)
+        {
+            okToClose = false;
+            okToMerge = false;
+        }
+
+        MergeButton.IsEnabled = okToMerge;
+
+        CloseButton.IsEnabled = okToClose;
     }
 }
