@@ -132,6 +132,8 @@ public sealed partial class CreatePullRequestPage : Page
 
     private void BranchNameInput_OnTextChanged(object sender, TextChangedEventArgs e)
     {
+        TitleInput.Text = BranchNameInput.Text.Replace("-", " ");
+
         CheckIfOkToCreate();
     }
 

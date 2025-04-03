@@ -42,6 +42,8 @@ public sealed partial class SquashMergePage : Page
     {
         _selectedPullRequest = PullRequestSelector.SelectedItem as PullRequest;
 
+        MessageInput.Text = (PullRequestSelector.SelectedItem as PullRequest)?.Title.Replace("-", " ") ?? string.Empty;
+
         CheckIfOkToMergeOrClose();
     }
 
@@ -177,9 +179,11 @@ public sealed partial class SquashMergePage : Page
         finally
         {
             MergeButton.IsEnabled = true;
-            MergeButton.Content = "Merge";
+            MergeButton.Content = "Merge pull request";
             CloseButton.IsEnabled = true;
             OnMergingOrClosing.Visibility = Visibility.Collapsed;
+            PullRequestSelector.SelectedIndex = -1;
+            MessageInput.Text = string.Empty;
         }
     }
 
@@ -210,8 +214,9 @@ public sealed partial class SquashMergePage : Page
         {
             MergeButton.IsEnabled = true;
             CloseButton.IsEnabled = true;
-            CloseButton.Content = "Close";
+            CloseButton.Content = "Close pull request";
             OnMergingOrClosing.Visibility = Visibility.Collapsed;
+            PullRequestSelector.SelectedIndex = -1;
         }
     }
 
