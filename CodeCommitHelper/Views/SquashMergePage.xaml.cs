@@ -1,4 +1,6 @@
-﻿using Amazon.CodeCommit;
+﻿using System.Net;
+using System.Text.Json;
+using Amazon.CodeCommit;
 using Amazon.CodeCommit.Model;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SecurityToken;
@@ -165,10 +167,27 @@ public sealed partial class SquashMergePage : Page
                 AuthorName = author,
                 Email = email,
                 RepositoryName = _selectedRepository,
-                CommitMessage = message
+                CommitMessage = message,
             };
 
-            await _codeCommitClient.MergePullRequestBySquashAsync(mergeRequest);
+            var response = await _codeCommitClient.MergePullRequestBySquashAsync(mergeRequest);
+
+            if (response.HttpStatusCode != HttpStatusCode.OK)
+            {
+                await App.MainWindow.ShowMessageDialogAsync(JsonSerializer.Serialize(response.ResponseMetadata.Metadata), response.HttpStatusCode.ToString());
+
+                return;
+            }
+
+            var branchName = response.PullRequest.PullRequestTargets.First().SourceReference;
+
+            var deleteBranchRequest = new DeleteBranchRequest()
+            {
+                BranchName = branchName,
+                RepositoryName = _selectedRepository
+            };
+
+            await _codeCommitClient.DeleteBranchAsync(deleteBranchRequest);
 
             await LoadPullRequestsAsync();
         }
