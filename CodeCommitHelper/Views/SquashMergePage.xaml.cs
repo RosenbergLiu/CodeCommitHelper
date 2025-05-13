@@ -58,7 +58,7 @@ public sealed partial class SquashMergePage : Page
 
         var approvalStateText = string.Join("; ", approvalStateResponse.Approvals.Select(a => a.ApprovalState));
 
-        var branchText = string.Join("; ", selectedPullRequest.PullRequestTargets.Select(t => t.SourceReference));
+        var branchText = string.Join("; ", selectedPullRequest.PullRequestTargets.Select(t => t.SourceReference.Split("/").Last()));
 
         PullRequestDetail.Text = $"Pull request Id: {selectedPullRequest!.PullRequestId}\nBranch: {branchText}\nApproval state: {approvalStateText}";
 
@@ -203,7 +203,7 @@ public sealed partial class SquashMergePage : Page
             {
                 var deleteBranchRequests = _selectedPullRequest.PullRequestTargets.Select(p => new DeleteBranchRequest()
                 {
-                    BranchName = p.SourceReference,
+                    BranchName = p.SourceReference.Split("/").Last(),
                     RepositoryName = _selectedRepository
                 });
 
