@@ -34,6 +34,8 @@ public sealed partial class SquashMergePage : Page
         PullRequestSelector.IsEnabled = false;
         MergeButton.IsEnabled = false;
         CloseButton.IsEnabled = false;
+        DeleteBranch.IsChecked = true;
+        MergeButton.IsEnabled = false;
         _ = LoadRepositoriesAsync();
         _ = LoadAuthorAndEmail();
     }
@@ -56,7 +58,7 @@ public sealed partial class SquashMergePage : Page
 
         var approvalStateText = string.Join(";", approvalStateResponse.Approvals.Select(a => a.ApprovalState));
 
-        PullRequestId.Text = $"Pull request: {selectedPullRequest!.PullRequestId}\nBranch: {selectedPullRequest.PullRequestTargets.FirstOrDefault()!.SourceReference}\nApproval state: {approvalStateText}";
+        PullRequestDetail.Text = $"Pull request: {selectedPullRequest!.PullRequestId}\nBranch: {selectedPullRequest.PullRequestTargets.FirstOrDefault()!.SourceReference}\nApproval state: {approvalStateText}";
 
         PullRequestLink.Inlines.Clear();
 
@@ -194,6 +196,19 @@ public sealed partial class SquashMergePage : Page
             await _codeCommitClient.MergePullRequestBySquashAsync(mergeRequest);
 
             await LoadPullRequestsAsync();
+
+            if (DeleteBranch.IsChecked is true)
+            {
+                var deleteBranchRequests = _selectedPullRequest.PullRequestTargets.Select(p => new DeleteBranchRequest()
+                {
+                    BranchName = p.SourceReference,
+                    RepositoryName = _selectedRepository
+                });
+
+                var deleteBranchRequestTasks = deleteBranchRequests.Select(r => _codeCommitClient.DeleteBranchAsync(r)).ToList();
+
+                await Task.WhenAll(deleteBranchRequestTasks);
+            }
         }
         catch (Exception ex)
         {
@@ -291,8 +306,10 @@ public sealed partial class SquashMergePage : Page
         }
 
         MergeButton.IsEnabled = okToMerge;
+        DeleteBranch.IsEnabled = okToMerge;
 
         CloseButton.IsEnabled = okToClose;
+
     }
 
     private void PullRequestLink_Clicked(Hyperlink sender, HyperlinkClickEventArgs args)

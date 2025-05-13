@@ -15,10 +15,10 @@
                     </ComboBox>
                     <ComboBox x:Name="PullRequestSelector" SelectionChanged="PullRequest_SelectionChanged" Header="Pull request" Width="400">
                     </ComboBox>
-                    <TextBlock Name="PullRequestId" Width="400"></TextBlock>
                     <TextBlock Width="400" TextWrapping="Wrap">
                         <Hyperlink x:Name="PullRequestLink" Click="PullRequestLink_Clicked"/>
                     </TextBlock>
+                    <TextBlock Name="PullRequestDetail" Width="400"></TextBlock>
                 </StackPanel>
 
                 <StackPanel Spacing="16">
@@ -31,7 +31,9 @@
             <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 48,0,24">
                 <Button x:Name="MergeButton" Click="MergeButton_Click" Content="Merge pull request" Style="{ThemeResource AccentButtonStyle}">
                 </Button>
+                <CheckBox x:Name="DeleteBranch" Content="Delete branch"></CheckBox>
                 <Button x:Name="CloseButton" Content="Close pull request" Click="CloseButton_Click"></Button>
+                
             </StackPanel>
             <ProgressBar x:Name="OnMergingOrClosing" Width="140" IsIndeterminate="True" ShowPaused="False" ShowError="False" Visibility="Collapsed"/>
         </StackPanel>
