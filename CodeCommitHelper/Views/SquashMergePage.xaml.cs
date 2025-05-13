@@ -1,12 +1,12 @@
 ﻿using Amazon.CodeCommit;
 using Amazon.CodeCommit.Model;
-using Amazon.Runtime.CredentialManagement;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
 using CodeCommitHelper.Contracts.Services;
 using CodeCommitHelper.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 
 namespace CodeCommitHelper.Views;
 
@@ -38,11 +38,34 @@ public sealed partial class SquashMergePage : Page
         _ = LoadAuthorAndEmail();
     }
 
-    private void PullRequest_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void PullRequest_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        _selectedPullRequest = PullRequestSelector.SelectedItem as PullRequest;
+        var selectedPullRequest = PullRequestSelector.SelectedItem as PullRequest;
+
+        _selectedPullRequest = selectedPullRequest;
 
         MessageInput.Text = (PullRequestSelector.SelectedItem as PullRequest)?.Title.Replace("-", " ") ?? string.Empty;
+
+        var getApprovalStateRequest = new GetPullRequestApprovalStatesRequest()
+        {
+            PullRequestId = selectedPullRequest!.PullRequestId,
+            RevisionId = selectedPullRequest.RevisionId
+        };
+
+        var approvalStateResponse = await _codeCommitClient.GetPullRequestApprovalStatesAsync(getApprovalStateRequest);
+
+        var approvalStateText = string.Join(";", approvalStateResponse.Approvals.Select(a => a.ApprovalState));
+
+        PullRequestId.Text = $"Pull request: {selectedPullRequest!.PullRequestId}\nBranch: {selectedPullRequest.PullRequestTargets.FirstOrDefault()!.SourceReference}\nApproval state: {approvalStateText}";
+
+        PullRequestLink.Inlines.Clear();
+
+        var selectedRepository = RepositorySelector.SelectedItem as string;
+
+        PullRequestLink.Inlines.Add(new Run()
+        {
+            Text = $"https://ap-southeast-2.console.aws.amazon.com/codesuite/codecommit/repositories/{selectedRepository}/pull-requests/{selectedPullRequest!.PullRequestId}/changes?region=ap-southeast-2"
+        });
 
         CheckIfOkToMergeOrClose();
     }
@@ -270,5 +293,12 @@ public sealed partial class SquashMergePage : Page
         MergeButton.IsEnabled = okToMerge;
 
         CloseButton.IsEnabled = okToClose;
+    }
+
+    private void PullRequestLink_Clicked(Hyperlink sender, HyperlinkClickEventArgs args)
+    {
+        var uri =
+            $"https://ap-southeast-2.console.aws.amazon.com/codesuite/codecommit/repositories/{_selectedRepository}/pull-requests/{_selectedPullRequest!.PullRequestId}/changes?region=ap-southeast-2";
+        _ = Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
     }
 }

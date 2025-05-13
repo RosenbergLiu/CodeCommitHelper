@@ -15,7 +15,10 @@
                     </ComboBox>
                     <ComboBox x:Name="PullRequestSelector" SelectionChanged="PullRequest_SelectionChanged" Header="Pull request" Width="400">
                     </ComboBox>
-                    
+                    <TextBlock Name="PullRequestId" Width="400"></TextBlock>
+                    <TextBlock Width="400" TextWrapping="Wrap">
+                        <Hyperlink x:Name="PullRequestLink" Click="PullRequestLink_Clicked"/>
+                    </TextBlock>
                 </StackPanel>
 
                 <StackPanel Spacing="16">
