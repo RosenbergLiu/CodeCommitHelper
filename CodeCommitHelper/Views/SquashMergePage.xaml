@@ -24,7 +24,7 @@
                 <StackPanel Spacing="16">
                     <TextBox x:Name="AuthorInput" PlaceholderText="Name of the author" Header="Author name" Width="400" TextChanged="AuthorInput_OnTextChanged"></TextBox>
                     <TextBox x:Name="EmailInput" PlaceholderText="Email of the author" Header="Author email" Width="400" TextChanged="EmailInput_OnTextChanged"></TextBox>
-                    <TextBox x:Name="MessageInput" PlaceholderText="Commit message" Height="128" AcceptsReturn="True" TextWrapping="Wrap" Header="Commit message" Width="400" TextChanged="MessageInput_OnTextChanged"></TextBox>
+                    <TextBox x:Name="MessageInput" PlaceholderText="Commit message" Height="140" AcceptsReturn="True" TextWrapping="Wrap" Header="Commit message" Width="400" TextChanged="MessageInput_OnTextChanged"></TextBox>
                 </StackPanel>
             </StackPanel>
 

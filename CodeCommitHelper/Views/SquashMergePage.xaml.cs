@@ -56,9 +56,11 @@ public sealed partial class SquashMergePage : Page
 
         var approvalStateResponse = await _codeCommitClient.GetPullRequestApprovalStatesAsync(getApprovalStateRequest);
 
-        var approvalStateText = string.Join(";", approvalStateResponse.Approvals.Select(a => a.ApprovalState));
+        var approvalStateText = string.Join("; ", approvalStateResponse.Approvals.Select(a => a.ApprovalState));
 
-        PullRequestDetail.Text = $"Pull request: {selectedPullRequest!.PullRequestId}\nBranch: {selectedPullRequest.PullRequestTargets.FirstOrDefault()!.SourceReference}\nApproval state: {approvalStateText}";
+        var branchText = string.Join("; ", selectedPullRequest.PullRequestTargets.Select(t => t.SourceReference));
+
+        PullRequestDetail.Text = $"Pull request Id: {selectedPullRequest!.PullRequestId}\nBranch: {branchText}\nApproval state: {approvalStateText}";
 
         PullRequestLink.Inlines.Clear();
 
