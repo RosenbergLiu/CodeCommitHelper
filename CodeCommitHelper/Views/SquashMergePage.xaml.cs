@@ -28,6 +28,7 @@ public sealed partial class SquashMergePage : Page
         _localSettingsService = App.GetService<ILocalSettingsService>();
         _codeCommitClient = new AmazonCodeCommitClient();
         ViewModel = App.GetService<SquashMergeViewModel>();
+        _selectedPullRequestApprovals = new List<Approval>();
         InitializeComponent();
 
         RepositorySelector.PlaceholderText = "Loading pull requests...";
@@ -320,7 +321,7 @@ public sealed partial class SquashMergePage : Page
             okToMerge = false;
         }
 
-        if (_selectedPullRequestApprovals.Any(a => a.ApprovalState != new ApprovalState("APPROVED")))
+        if (!_selectedPullRequestApprovals.Any() || _selectedPullRequestApprovals.Any(a => a.ApprovalState != new ApprovalState("APPROVED")))
         {
             okToMerge = false;
         }
