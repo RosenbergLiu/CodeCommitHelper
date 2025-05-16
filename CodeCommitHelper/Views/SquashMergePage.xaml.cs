@@ -16,6 +16,7 @@ public sealed partial class SquashMergePage : Page
     private readonly AmazonCodeCommitClient _codeCommitClient;
     private PullRequest? _selectedPullRequest;
     private readonly ILocalSettingsService _localSettingsService;
+    private List<Approval> _selectedPullRequestApprovals;
 
     public SquashMergeViewModel ViewModel
     {
@@ -55,6 +56,8 @@ public sealed partial class SquashMergePage : Page
         };
 
         var approvalStateResponse = await _codeCommitClient.GetPullRequestApprovalStatesAsync(getApprovalStateRequest);
+
+        _selectedPullRequestApprovals = approvalStateResponse.Approvals;
 
         var approvalStateText = string.Join("; ", approvalStateResponse.Approvals.Select(a => a.ApprovalState));
 
@@ -186,6 +189,13 @@ public sealed partial class SquashMergePage : Page
 
             await _localSettingsService.SaveSettingAsync("Email", email);
 
+            if (_selectedPullRequest == null)
+            {
+                return;
+            }
+
+            var selectedPullRequest = _selectedPullRequest;
+
             var mergeRequest = new MergePullRequestBySquashRequest()
             {
                 PullRequestId = _selectedPullRequest!.PullRequestId,
@@ -197,11 +207,9 @@ public sealed partial class SquashMergePage : Page
 
             await _codeCommitClient.MergePullRequestBySquashAsync(mergeRequest);
 
-            await LoadPullRequestsAsync();
-
             if (DeleteBranch.IsChecked is true)
             {
-                var deleteBranchRequests = _selectedPullRequest.PullRequestTargets.Select(p => new DeleteBranchRequest()
+                var deleteBranchRequests = selectedPullRequest.PullRequestTargets.Select(p => new DeleteBranchRequest()
                 {
                     BranchName = p.SourceReference.Split("/").Last(),
                     RepositoryName = _selectedRepository
@@ -211,6 +219,11 @@ public sealed partial class SquashMergePage : Page
 
                 await Task.WhenAll(deleteBranchRequestTasks);
             }
+
+            await LoadPullRequestsAsync();
+
+            PullRequestLink.Inlines.Clear();
+            PullRequestDetail.Text = string.Empty;
         }
         catch (Exception ex)
         {
@@ -304,6 +317,11 @@ public sealed partial class SquashMergePage : Page
         if (PullRequestSelector.SelectedIndex == -1)
         {
             okToClose = false;
+            okToMerge = false;
+        }
+
+        if (_selectedPullRequestApprovals.Any(a => a.ApprovalState != new ApprovalState("APPROVED")))
+        {
             okToMerge = false;
         }
 
