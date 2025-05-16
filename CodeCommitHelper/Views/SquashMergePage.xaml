@@ -31,7 +31,7 @@
             <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 48,0,24">
                 <Button x:Name="MergeButton" Click="MergeButton_Click" Content="Merge pull request" Style="{ThemeResource AccentButtonStyle}">
                 </Button>
-                <CheckBox x:Name="DeleteBranch" Content="Delete branch"></CheckBox>
+                <CheckBox x:Name="DeleteBranch" Content="Delete branch after merge"></CheckBox>
                 <Button x:Name="CloseButton" Content="Close pull request" Click="CloseButton_Click"></Button>
                 
             </StackPanel>
