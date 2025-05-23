@@ -13,7 +13,7 @@
   <Identity
     Name="f19ab575-233f-4141-8cd4-88ccf4effe02"
     Publisher="CN=Rosenberg Xiangyu Liu"
-    Version="1.1.8.0" />
+    Version="1.1.9.0" />
     
   <mp:PhoneIdentity PhoneProductId="f19ab575-233f-4141-8cd4-88ccf4effe02" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     

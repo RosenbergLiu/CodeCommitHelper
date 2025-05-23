@@ -321,11 +321,6 @@ public sealed partial class SquashMergePage : Page
             okToMerge = false;
         }
 
-        if (!_selectedPullRequestApprovals.Any() || _selectedPullRequestApprovals.Any(a => a.ApprovalState != new ApprovalState("APPROVED")))
-        {
-            okToMerge = false;
-        }
-
         MergeButton.IsEnabled = okToMerge;
         DeleteBranch.IsEnabled = okToMerge;
 
