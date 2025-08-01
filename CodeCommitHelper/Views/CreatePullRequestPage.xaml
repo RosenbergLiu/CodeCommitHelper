@@ -7,18 +7,29 @@
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
-        <StackPanel Spacing="16" HorizontalAlignment="Left">
-            <ComboBox x:Name="RepositorySelector" SelectionChanged="Repository_SelectionChanged" Header="Repository" Width="400">
-            </ComboBox>
-            <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name" Width="400" Header="Branch name" TextChanged="BranchNameInput_OnTextChanged"></TextBox>
-            <TextBox x:Name="TitleInput" PlaceholderText="Title" Width="400" Header="Title" TextChanged="TitleInput_OnTextChanged"></TextBox>
+        <StackPanel HorizontalAlignment="Left" Spacing="16">
+            <StackPanel Spacing="48" Orientation="Horizontal" HorizontalAlignment="Left">
+                <StackPanel Spacing="16">
+                    <ComboBox x:Name="RepositorySelector" SelectionChanged="Repository_SelectionChanged" Header="Repository" Width="400">
+                    </ComboBox>
+                    <ComboBox x:Name="DestinationBranchSelector" SelectionChanged="DestinationBranch_SelectionChanged" Header="Destination" Width="400">
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Spacing="16">
+                    <TextBox x:Name="BranchNameInput" PlaceholderText="Branch Name" Width="400" Header="Branch name" TextChanged="BranchNameInput_OnTextChanged"></TextBox>
+                    <TextBox x:Name="TitleInput" PlaceholderText="Title" Width="400" Header="Title" TextChanged="TitleInput_OnTextChanged"></TextBox>
+                    <TextBox x:Name="DescriptionInput" PlaceholderText="Description" Height="90" AcceptsReturn="True" TextWrapping="Wrap" Header="Description" Width="400"></TextBox>
+                </StackPanel>
+
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal" Spacing="24" Margin="0, 8,0,0">
                 <Button x:Name="CreateButton" Content="Create Pull Request" Click="CreateButton_Click" ClickMode="Release" Style="{ThemeResource AccentButtonStyle}"></Button>
                 <ProgressBar x:Name="OnCreating" Width="140" IsIndeterminate="True" ShowPaused="False" ShowError="False" Visibility="Collapsed"/>
             </StackPanel>
 
-            <StackPanel>
-                <TextBox x:Name="OutputText" PlaceholderText="Output" TextWrapping="Wrap" AcceptsReturn="True" Height="128" Width="400"></TextBox>
+            <StackPanel Orientation="Horizontal" >
+                <TextBox x:Name="OutputText" PlaceholderText="Output" TextWrapping="Wrap" AcceptsReturn="True" Height="90" Width="400"></TextBox>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Spacing="12">
@@ -27,7 +38,7 @@
                 </Button>
                 <Button x:Name="ClearButton" Content="Clear" Click="ClearButton_Click"></Button>
             </StackPanel>
-
         </StackPanel>
+        
     </Grid>
 </Page>

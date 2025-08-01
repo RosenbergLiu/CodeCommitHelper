@@ -15,7 +15,7 @@
                     </ComboBox>
                     <ComboBox x:Name="PullRequestSelector" SelectionChanged="PullRequest_SelectionChanged" Header="Pull request" Width="400">
                     </ComboBox>
-                    <TextBlock Width="400" TextWrapping="Wrap">
+                    <TextBlock Width="400" TextWrapping="Wrap" IsTextSelectionEnabled="True">
                         <Hyperlink x:Name="PullRequestLink" Click="PullRequestLink_Clicked"/>
                     </TextBlock>
                     <TextBlock Name="PullRequestDetail" Width="400"></TextBlock>
@@ -24,7 +24,7 @@
                 <StackPanel Spacing="16">
                     <TextBox x:Name="AuthorInput" PlaceholderText="Name of the author" Header="Author name" Width="400" TextChanged="AuthorInput_OnTextChanged"></TextBox>
                     <TextBox x:Name="EmailInput" PlaceholderText="Email of the author" Header="Author email" Width="400" TextChanged="EmailInput_OnTextChanged"></TextBox>
-                    <TextBox x:Name="MessageInput" PlaceholderText="Commit message" Height="140" AcceptsReturn="True" TextWrapping="Wrap" Header="Commit message" Width="400" TextChanged="MessageInput_OnTextChanged"></TextBox>
+                    <TextBox x:Name="MessageInput" PlaceholderText="Commit message" Height="160" AcceptsReturn="True" TextWrapping="Wrap" Header="Commit message" Width="400" TextChanged="MessageInput_OnTextChanged"></TextBox>
                 </StackPanel>
             </StackPanel>
 
